@@ -29,7 +29,7 @@ public class API {
     public void pollApi(String url, String topics){
         String response = restTemplate.getForObject(url, String.class);
         log.info("Response fetched by polling API - {}: {}", url,response);
-        kafkaTemplate.send("cocktail", response);
+        kafkaTemplate.send(topics, response);
         log.info("Sent response via kafka");
     }
 }
