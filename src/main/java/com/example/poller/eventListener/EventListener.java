@@ -17,17 +17,17 @@ public class EventListener {
     private MongoTemplate mongoTemplate;
 
     @KafkaListener(topics = "cocktail")
-    public void listenToCocktailTopic(String topic, String message){
-        log.info("Received event from cocktail topic: {} -->", message);
-        saveToMongoDb(message, topic);
-        log.info("cocktail topic data saved {}, to database", message);
+    public void listenToCocktailTopic(String response, String topic){
+        log.info("Received event from cocktail topic: {} -->", response);
+        saveToMongoDb(response, "cocktail");
+        log.info("cocktail topic data saved {}, to database", response);
     }
 
     @KafkaListener(topics = "randomuser")
-    public void listenToRandomUserTopic(String topic, String message){
-        log.info("Received event from randomuser topic: {} -->", message);
-        saveToMongoDb(message, topic);
-        log.info("randomuser topic data saved {}, to database",message);
+    public void listenToRandomUserTopic(String response, String topic){
+        log.info("Received event from randomuser topic: {} -->", response);
+           saveToMongoDb(response, "randomuser");
+        log.info("randomuser topic data saved {}, to database",response);
     }
     public void saveToMongoDb(String message, String collectionName){
         mongoTemplate.save(message, collectionName);
