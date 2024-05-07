@@ -1,6 +1,7 @@
 package com.example.poller.api;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Async;
@@ -10,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Component
 @AllArgsConstructor
+@Slf4j
 public class API {
 
     @Autowired
@@ -22,11 +24,12 @@ public class API {
     @Scheduled(fixedRate = 5000)
     public void fetchContent(){
         pollApi("https://www.thecocktaildb.com/api/json/v1/1/random.php", "cocktail");
-//        pollApi("https://randomuser.me/api/", "randomuser");
+        pollApi("https://randomuser.me/api/", "randomuser");
     }
     public void pollApi(String url, String topics){
         String response = restTemplate.getForObject(url, String.class);
+        log.info("Response fetched by polling API - {}: {}", url,response);
         kafkaTemplate.send("cocktail", response);
-        System.out.println(String.format("Response for topic is %s", response));
+        log.info("Sent response via kafka");
     }
 }
