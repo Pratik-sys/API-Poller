@@ -27,9 +27,14 @@ public class API {
         pollApi("https://randomuser.me/api/", "randomuser");
     }
     public void pollApi(String url, String topics){
-        String response = restTemplate.getForObject(url, String.class);
-        log.info("Response fetched by polling API - {}: {}", url,response);
-        kafkaTemplate.send(topics, response);
-        log.info("Sent response via kafka");
+        try{
+            String response = restTemplate.getForObject(url, String.class);
+            log.info("Response fetched by polling API - {}: {}", url,response);
+            kafkaTemplate.send(topics, response);
+            log.info("Sent response via kafka");
+        }catch (Exception e){
+            log.error("Polling to API failed");
+            log.error(e.getMessage());
+        }
     }
 }

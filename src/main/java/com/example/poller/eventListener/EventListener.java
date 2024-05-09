@@ -20,16 +20,21 @@ public class EventListener {
     public void listenToCocktailTopic(String response, String topic){
         log.info("Received event from cocktail topic: {} -->", response);
         saveToMongoDb(response, "cocktail");
-        log.info("cocktail topic data saved {}, to database", response);
     }
 
     @KafkaListener(topics = "randomuser")
     public void listenToRandomUserTopic(String response, String topic){
         log.info("Received event from randomuser topic: {} -->", response);
            saveToMongoDb(response, "randomuser");
-        log.info("randomuser topic data saved {}, to database",response);
     }
     public void saveToMongoDb(String message, String collectionName){
-        mongoTemplate.save(message, collectionName);
+        try {
+            mongoTemplate.save(message, collectionName);
+            log.info("Data saved for {} -> {}", collectionName, message);
+        }
+        catch (Exception e){
+            log.error("Failed to save into database");
+            log.error(e.getMessage());
+        }
     }
 }
